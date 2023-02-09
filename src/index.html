@@ -8,6 +8,9 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <div class="buttonMenu">
+      <button onclick="lineDrawingMode()">Line</button>
+    </div>
   </body>
   <script id="vertexShader" type="notjs">
     attribute vec4 a_position;
@@ -39,4 +42,6 @@
   </script>
   <script src="utils/webglUtils.js"></script>
   <script src="main.js"></script>
+  <script src="shapes/shape.js"></script>
+  <script src="shapes/line.js"></script>
 </html>

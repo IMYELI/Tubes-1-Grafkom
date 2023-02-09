@@ -82,9 +82,10 @@ class webglUtils {
     return needResize;
   }
 
-  getCanvasX(e, canvas) {
+  getCanvasCoord(e) {
     var x = e.clientX;
     var y = e.clientY;
     var rect = e.target.getBoundingClientRect();
+    return [x - rect.left, y - rect.top];
   }
 }

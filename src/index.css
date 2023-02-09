@@ -7,3 +7,8 @@ canvas {
   display: block;
   margin: auto;
 }
+
+.buttonMenu button {
+  display: flex;
+  margin: 5vh auto;
+}

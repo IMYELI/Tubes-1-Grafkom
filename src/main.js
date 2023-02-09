@@ -1,7 +1,20 @@
+var shapes = {
+  lines: [],
+};
+
+var webglUtil = new webglUtils();
+var canvas = document.querySelector("#canvas");
+var gl = canvas.getContext("webgl");
+
+// To check if we already clicked the canvas during a drawing mode
+var clickedModes = {
+  line: { click: false, hover: false },
+};
+
+// Storing temporary line
+var tempLine = null;
+
 async function main() {
-  var webglUtil = new webglUtils();
-  var canvas = document.querySelector("#canvas");
-  var gl = canvas.getContext("webgl");
   if (!gl) {
     window.alert("Error initializing WebGL");
     return;
@@ -17,12 +30,6 @@ async function main() {
   drawScene();
 
   generateRectangle(2);
-  generateLine(5);
-
-  // Generate an integer from 0 to (range-1)
-  function randInt(range) {
-    return Math.floor(Math.random() * range);
-  }
 
   //Buffering the points of rectangle.
   function bufferRectangle(x, y, width, height) {
@@ -36,18 +43,6 @@ async function main() {
   // Setting the color of object
   function bufferRandomColor(opacity = 1) {
     gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), opacity);
-  }
-
-  function generateLine(count = 1) {
-    var primitiveType = gl.LINES;
-    var offset = 0;
-    var shaderCount = 2;
-
-    for (var i = 0; i < count; i++) {
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([randInt(300), randInt(300), randInt(300), randInt(300)]), gl.STATIC_DRAW);
-      bufferRandomColor();
-      gl.drawArrays(primitiveType, offset, shaderCount);
-    }
   }
 
   // Create <count> rectangle
@@ -65,11 +60,9 @@ async function main() {
   function drawScene() {
     webglUtil.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
     // Clear the canvas
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-
     // Using the default program
     gl.useProgram(program);
 
@@ -86,7 +79,63 @@ async function main() {
 
     // Setting the resolution
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+
+    try {
+      shapes.lines.forEach((l) => {
+        l.setGLColor(gl, colorUniformLocation);
+        l.draw(gl);
+      });
+    } catch (e) {
+      console.log(e.message);
+    }
+    window.requestAnimationFrame(drawScene);
   }
 }
 
 main();
+
+function generateLine() {
+  shapes.lines.push(new line(gl, [randInt(300), randInt(300), randInt(300), randInt(300)], [Math.random(), Math.random(), Math.random(), Math.random()]));
+
+  console.log(shapes.lines);
+}
+
+// Generate an integer from 0 to (range-1)
+function randInt(range) {
+  return Math.floor(Math.random() * range);
+}
+
+// What to do with canvas while clicking the line button
+function lineDrawingMode() {
+  canvas.onmousedown = (e) => {
+    lineDrawClick(e);
+  };
+  canvas.onmousemove = (e) => {
+    lineDrawHover(e);
+  };
+}
+
+// What to do if the canvas is clicked during lineDrawingMode
+function lineDrawClick(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.line.click) {
+    tempLine = new line(gl, coord, [Math.random(), Math.random(), Math.random(), Math.random()]);
+    clickedModes.line.click = true;
+  } else {
+    shapes.lines[shapes.lines.length - 1].changeLastCoord(coord);
+    clickedModes.line.click = false;
+    clickedModes.line.hover = false;
+  }
+}
+
+// What to do if the canvas is hovered after clicked during lineDrawingMode
+function lineDrawHover(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (clickedModes.line.click && clickedModes.line.hover) {
+    shapes.lines[shapes.lines.length - 1].changeLastCoord(coord);
+  } else if (clickedModes.line.click && !clickedModes.line.hover) {
+    tempLine.firstHoverCoord(coord);
+    shapes.lines.push(tempLine);
+    clickedModes.line.hover = true;
+  }
+}
