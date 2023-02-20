@@ -4,12 +4,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <canvas id="canvas"></canvas>
-    <div class="buttonMenu">
-      <button onclick="lineDrawingMode()">Line</button>
+    <div class="container">
+      <div class="canvas-board">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="tools-board">
+        <div class="options">
+          <label class="create">Create Shapes</label>
+          <div class="create-button">
+            <button class="button-3" onclick="lineDrawingMode()">Line</button>
+            <button class="button-3" onclick="squareDrawingMode()">Square</button>
+            <button class="button-3" onclick="rectangleDrawingMode()">Rectangle</button>
+            <button class="button-3" onclick="polygonDrawingMode()">Polygon</button>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   <script id="vertexShader" type="notjs">
@@ -44,4 +56,6 @@
   <script src="main.js"></script>
   <script src="shapes/shape.js"></script>
   <script src="shapes/line.js"></script>
+  <script src="shapes/square.js"></script>
+  <script src="shapes/rectangle.js"></script>
 </html>

@@ -1,5 +1,7 @@
 var shapes = {
   lines: [],
+  squares: [],
+  rectangles: [],
 };
 
 var webglUtil = new webglUtils();
@@ -9,10 +11,14 @@ var gl = canvas.getContext("webgl");
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
   line: { click: false, hover: false },
+  square: { click: false, hover: false },
+  rectangle: { click: false, hover: false },
 };
 
 // Storing temporary line
 var tempLine = null;
+var tempSquare = null;
+var tempRectangle = null;
 
 async function main() {
   if (!gl) {
@@ -85,6 +91,14 @@ async function main() {
         l.setGLColor(gl, colorUniformLocation);
         l.draw(gl);
       });
+      shapes.squares.forEach((s) => {
+        s.setGLColor(gl, colorUniformLocation);
+        s.draw(gl);
+      });
+      shapes.rectangles.forEach((r) => {
+        r.setGLColor(gl, colorUniformLocation);
+        r.draw(gl);
+      });
     } catch (e) {
       console.log(e.message);
     }
@@ -96,8 +110,6 @@ main();
 
 function generateLine() {
   shapes.lines.push(new line(gl, [randInt(300), randInt(300), randInt(300), randInt(300)], [Math.random(), Math.random(), Math.random(), Math.random()]));
-
-  console.log(shapes.lines);
 }
 
 // Generate an integer from 0 to (range-1)
@@ -119,7 +131,7 @@ function lineDrawingMode() {
 function lineDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.line.click) {
-    tempLine = new line(gl, coord, [Math.random(), Math.random(), Math.random(), Math.random()]);
+    tempLine = new line(gl, coord, [0.9, 0, 0, 1]);
     clickedModes.line.click = true;
   } else {
     shapes.lines[shapes.lines.length - 1].changeLastCoord(coord);
@@ -137,5 +149,75 @@ function lineDrawHover(e) {
     tempLine.firstHoverCoord(coord);
     shapes.lines.push(tempLine);
     clickedModes.line.hover = true;
+  }
+}
+
+// What to do with canvas while clicking the square button
+function squareDrawingMode() {
+  canvas.onmousedown = (e) => {
+    squareDrawClick(e);
+  };
+  canvas.onmousemove = (e) => {
+    squareDrawHover(e);
+  };
+}
+
+// What to do if the canvas is clicked during squareDrawingMode
+function squareDrawClick(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.square.click) {
+    tempSquare = new square(gl, coord, [0.9, 0, 0, 1]);
+    clickedModes.square.click = true;
+  } else {
+    shapes.squares[shapes.squares.length - 1].changeLastCoord(coord);
+    clickedModes.square.click = false;
+    clickedModes.square.hover = false;
+  }
+}
+
+// What to do if the canvas is hovered after clicked during squareDrawingMode
+function squareDrawHover(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (clickedModes.square.click && clickedModes.square.hover) {
+    shapes.squares[shapes.squares.length - 1].changeLastCoord(coord);
+  } else if (clickedModes.square.click && !clickedModes.square.hover) {
+    tempSquare.firstHoverCoord(coord);
+    shapes.squares.push(tempSquare);
+    clickedModes.square.hover = true;
+  }
+}
+
+// What to do with canvas while clicking the rectangle button
+function rectangleDrawingMode() {
+  canvas.onmousedown = (e) => {
+    rectangleDrawClick(e);
+  };
+  canvas.onmousemove = (e) => {
+    rectangleDrawHover(e);
+  };
+}
+
+// What to do if the canvas is clicked during rectangleDrawingMode
+function rectangleDrawClick(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.rectangle.click) {
+    tempRectangle = new rectangle(gl, coord, [0.9, 0, 0, 1]);
+    clickedModes.rectangle.click = true;
+  } else {
+    shapes.rectangles[shapes.rectangles.length - 1].changeLastCoord(coord);
+    clickedModes.rectangle.click = false;
+    clickedModes.rectangle.hover = false;
+  }
+}
+
+// What to do if the canvas is hovered after clicked during rectangleDrawingMode
+function rectangleDrawHover(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (clickedModes.rectangle.click && clickedModes.rectangle.hover) {
+    shapes.rectangles[shapes.rectangles.length - 1].changeLastCoord(coord);
+  } else if (clickedModes.rectangle.click && !clickedModes.rectangle.hover) {
+    tempRectangle.firstHoverCoord(coord);
+    shapes.rectangles.push(tempRectangle);
+    clickedModes.rectangle.hover = true;
   }
 }
