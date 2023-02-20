@@ -55,7 +55,10 @@ body{
   margin: 10px 0 0 5px;
 }
 
-/* CSS */
+.polygon-sides {
+  gap: 10px;
+  margin: 20px 0 0 5px;
+}
 .button-3 {
   appearance: none;
   background-color: #2ea44f;

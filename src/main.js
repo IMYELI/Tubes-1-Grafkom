@@ -2,17 +2,20 @@ var shapes = {
   lines: [],
   squares: [],
   rectangles: [],
+  polygons: [],
 };
 
 var webglUtil = new webglUtils();
 var canvas = document.querySelector("#canvas");
 var gl = canvas.getContext("webgl");
+var polygonPoints = document.querySelector("#polygon-sides");
 
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
   line: { click: false, hover: false },
   square: { click: false, hover: false },
   rectangle: { click: false, hover: false },
+  polygon: { click: false },
 };
 
 // Storing temporary line
@@ -98,6 +101,10 @@ async function main() {
       shapes.rectangles.forEach((r) => {
         r.setGLColor(gl, colorUniformLocation);
         r.draw(gl);
+      });
+      shapes.polygons.forEach((p) => {
+        p.setGLColor(gl, colorUniformLocation);
+        p.draw(gl);
       });
     } catch (e) {
       console.log(e.message);
@@ -219,5 +226,27 @@ function rectangleDrawHover(e) {
     tempRectangle.firstHoverCoord(coord);
     shapes.rectangles.push(tempRectangle);
     clickedModes.rectangle.hover = true;
+  }
+}
+
+// What to do with canvas while clicking the polygon button
+function polygonDrawingMode() {
+  canvas.onmousedown = (e) => {
+    polygonDrawClick(e);
+  };
+}
+
+// What to do if the canvas is clicked during polygonDrawingMode
+function polygonDrawClick(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.polygon.click) {
+    tempPolygon = new polygon(gl, coord, [0.9, 0, 0, 1]);
+    clickedModes.polygon.click = true;
+  } else {
+    tempPolygon.addCoord(coord);
+    if (polygonPoints.value*2 == tempPolygon.getCoord().length) {
+      shapes.polygons.push(tempPolygon);
+      clickedModes.polygon.click = false;
+    }
   }
 }
