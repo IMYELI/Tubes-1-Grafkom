@@ -41,6 +41,10 @@ body{
   border-radius: 7px;
 }
 
+.polygon-tools {
+  margin-top: 10px;
+}
+
 .polygon-button {
   display: flex;
   flex-direction: row;
@@ -60,9 +64,8 @@ body{
   padding: 15px 22px 0;
 }
 
-.polygon-sides {
-  gap: 10px;
-  margin: 20px 0 20px 5px;
+.text-input {
+  margin: 0 0 10px 5px;
 }
 
 .button-3 {

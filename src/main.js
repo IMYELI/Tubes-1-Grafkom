@@ -9,6 +9,8 @@ var webglUtil = new webglUtils();
 var canvas = document.querySelector("#canvas");
 var gl = canvas.getContext("webgl");
 var polygonPoints = document.querySelector("#polygon-sides");
+var dilationInput = document.querySelector("#dilation");
+// var rotationInput = document.querySelector("#rotation");
 
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
@@ -23,6 +25,7 @@ var tempLine = null;
 var tempSquare = null;
 var tempRectangle = null;
 var selectedShape = null;
+var middlePoints = null;
 
 async function main() {
   if (!gl) {
@@ -316,7 +319,6 @@ function polygonAdd(e) {
 
 function polygonTranslation() {
   canvas.onmousedown = (e) => {
-    console.log("click2");
     polygonPlace(e);
   };
   canvas.onmousemove = (e) => {
@@ -370,9 +372,40 @@ function polygonDilate(e) {
   for (var i = 0; i < shapes.polygons.length; i++) {
     if (shapes.polygons[i].isInside(coord)) {
       selectedShape = i;
-      var value = document.querySelector("#myRange").value;
-      shapes.polygons[selectedShape].dilate(value);
+      shapes.polygons[selectedShape].dilate(dilationInput.value);
       break;
     }
+  }
+}
+
+function polygonRotation() {
+  canvas.onmousedown = (e) => {
+    selectPolygon(e);
+  };
+  canvas.onmousemove = (e) => {
+    polygonRotate(e);
+  };
+}
+
+function selectPolygon(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.polygon.click) {
+    for (var i = 0; i < shapes.polygons.length; i++) {
+      if (shapes.polygons[i].isInside(coord)) {
+        selectedShape = i;
+        middlePoints = shapes.polygons[selectedShape].getMiddle();
+        clickedModes.polygon.click = true;
+        break;
+      }
+    }
+  } else {
+    clickedModes.polygon.click = false;
+  }
+}
+
+function polygonRotate(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (clickedModes.polygon.click) {
+    shapes.polygons[selectedShape].rotate(coord, middlePoints);
   }
 }
