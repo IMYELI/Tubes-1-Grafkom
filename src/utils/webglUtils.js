@@ -32,8 +32,8 @@ class webglUtils {
    */
   async createProgram(gl, vertexShaderSource, fragmentShaderSource) {
     var program = gl.createProgram();
-    var vertexShader = this.createShader(gl, document.getElementById(vertexShaderSource).text, gl.VERTEX_SHADER);
     var fragmentShader = this.createShader(gl, document.getElementById(fragmentShaderSource).text, gl.FRAGMENT_SHADER);
+    var vertexShader = this.createShader(gl, document.getElementById(vertexShaderSource).text, gl.VERTEX_SHADER);
 
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);

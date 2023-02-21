@@ -9,10 +9,15 @@ var gl = canvas.getContext("webgl");
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
   line: { click: false, hover: false },
+  select: false,
 };
 
 // Storing temporary line
 var tempLine = null;
+
+var shapeIdx = -1;
+var shapeCode = -1;
+var currentPoint = -1;
 
 async function main() {
   if (!gl) {
@@ -23,13 +28,19 @@ async function main() {
   var program = await webglUtil.createDefaultProgram(gl);
   var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
   var resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
-  var colorUniformLocation = gl.getUniformLocation(program, "u_color");
-  var positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  var colorUniformLocation = gl.getAttribLocation(program, "a_color");
+  var vertexBuffer = gl.createBuffer();
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+
+  // enabling the attribute so that we can take data from the buffer
+  gl.enableVertexAttribArray(positionAttributeLocation);
+  gl.enableVertexAttribArray(colorUniformLocation);
+
+  gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, gl.FALSE, 6 * Float32Array.BYTES_PER_ELEMENT, 0);
+  gl.vertexAttribPointer(colorUniformLocation, 4, gl.FLOAT, gl.FALSE, 6 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
 
   drawScene();
-
-  generateRectangle(2);
 
   //Buffering the points of rectangle.
   function bufferRectangle(x, y, width, height) {
@@ -66,23 +77,11 @@ async function main() {
     // Using the default program
     gl.useProgram(program);
 
-    // enabling the attribute so that we can take data from the buffer
-    gl.enableVertexAttribArray(positionAttributeLocation);
-
-    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-    var size = 2; // 2 components per iteration
-    var type = gl.FLOAT; // the data is 32bit floats
-    var normalize = false; // don't normalize the data
-    var stride = 0; // 0 = move forward size * sizeof(type) each iteration to get the next position
-    var offset = 0; // start at the beginning of the buffer
-    gl.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride, offset);
-
     // Setting the resolution
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
 
     try {
       shapes.lines.forEach((l) => {
-        l.setGLColor(gl, colorUniformLocation);
         l.draw(gl);
       });
     } catch (e) {
@@ -122,7 +121,6 @@ function lineDrawClick(e) {
     tempLine = new line(gl, coord, [Math.random(), Math.random(), Math.random(), Math.random()]);
     clickedModes.line.click = true;
   } else {
-    shapes.lines[shapes.lines.length - 1].changeLastCoord(coord);
     clickedModes.line.click = false;
     clickedModes.line.hover = false;
   }
@@ -137,5 +135,45 @@ function lineDrawHover(e) {
     tempLine.firstHoverCoord(coord);
     shapes.lines.push(tempLine);
     clickedModes.line.hover = true;
+  }
+}
+
+// using select tool to modify points
+function selectMode() {
+  canvas.onmousedown = (e) => {
+    selectClick(e);
+  };
+  canvas.onmousemove = (e) => {
+    selectHover(e);
+  };
+}
+
+function selectClick(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.select) {
+    // Check lines first
+    for (var i = 0; i < shapes.lines.length; i++) {
+      var l = shapes.lines[i];
+      var selectStatus = l.isEndpoint(coord);
+      if (selectStatus.isEndpoint) {
+        shapeIdx = i;
+        clickedModes.select = true;
+        shapeCode = 1;
+        currentPoint = selectStatus.point;
+        break;
+      }
+    }
+  } else {
+    shapeIdx = -1;
+    shapeCode = -1;
+    currentPoint = -1;
+    clickedModes.select = false;
+  }
+}
+
+function selectHover(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (shapeCode == 1 && clickedModes.select) {
+    shapes.lines[shapeIdx].setVertexCoord(coord, currentPoint);
   }
 }
