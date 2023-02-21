@@ -22,6 +22,7 @@ var clickedModes = {
 var tempLine = null;
 var tempSquare = null;
 var tempRectangle = null;
+var selectedShape = null;
 
 async function main() {
   if (!gl) {
@@ -132,6 +133,9 @@ function lineDrawingMode() {
   canvas.onmousemove = (e) => {
     lineDrawHover(e);
   };
+  canvas.onmouseleave = (e) => {
+    lineDrawLeave(e);
+  }
 }
 
 // What to do if the canvas is clicked during lineDrawingMode
@@ -159,7 +163,14 @@ function lineDrawHover(e) {
   }
 }
 
-// What to do with canvas while clicking the square button
+// What to do if the canvas is left after clicked during lineDrawingMode
+function lineDrawLeave(e) {
+  if (clickedModes.line.click && clickedModes.line.hover) {
+    clickedModes.line.click = false;
+    clickedModes.line.hover = false;
+  }
+}
+
 function squareDrawingMode() {
   canvas.onmousedown = (e) => {
     squareDrawClick(e);
@@ -167,9 +178,11 @@ function squareDrawingMode() {
   canvas.onmousemove = (e) => {
     squareDrawHover(e);
   };
+  canvas.onmouseleave = (e) => {
+    squareDrawLeave(e);
+  };
 }
 
-// What to do if the canvas is clicked during squareDrawingMode
 function squareDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.square.click) {
@@ -182,7 +195,6 @@ function squareDrawClick(e) {
   }
 }
 
-// What to do if the canvas is hovered after clicked during squareDrawingMode
 function squareDrawHover(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (clickedModes.square.click && clickedModes.square.hover) {
@@ -194,7 +206,13 @@ function squareDrawHover(e) {
   }
 }
 
-// What to do with canvas while clicking the rectangle button
+function squareDrawLeave(e) {
+  if (clickedModes.square.click && clickedModes.square.hover) {
+    clickedModes.square.click = false;
+    clickedModes.square.hover = false;
+  }
+}
+
 function rectangleDrawingMode() {
   canvas.onmousedown = (e) => {
     rectangleDrawClick(e);
@@ -202,9 +220,11 @@ function rectangleDrawingMode() {
   canvas.onmousemove = (e) => {
     rectangleDrawHover(e);
   };
+  canvas.onmouseleave = (e) => {
+    rectangleDrawLeave(e);
+  }
 }
 
-// What to do if the canvas is clicked during rectangleDrawingMode
 function rectangleDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.rectangle.click) {
@@ -217,7 +237,6 @@ function rectangleDrawClick(e) {
   }
 }
 
-// What to do if the canvas is hovered after clicked during rectangleDrawingMode
 function rectangleDrawHover(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (clickedModes.rectangle.click && clickedModes.rectangle.hover) {
@@ -229,14 +248,25 @@ function rectangleDrawHover(e) {
   }
 }
 
-// What to do with canvas while clicking the polygon button
+function rectangleDrawLeave(e) {
+  if (clickedModes.rectangle.click && clickedModes.rectangle.hover) {
+    clickedModes.rectangle.click = false;
+    clickedModes.rectangle.hover = false;
+  }
+}
+
 function polygonDrawingMode() {
   canvas.onmousedown = (e) => {
     polygonDrawClick(e);
   };
+  canvas.ondblclick = (e) => {
+    polygonDrawEnd(e);
+  }
+  canvas.onmousemove = (e) => {
+    //do nothing
+  }
 }
 
-// What to do if the canvas is clicked during polygonDrawingMode
 function polygonDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.polygon.click) {
@@ -244,9 +274,105 @@ function polygonDrawClick(e) {
     clickedModes.polygon.click = true;
   } else {
     tempPolygon.addCoord(coord);
-    if (polygonPoints.value*2 == tempPolygon.getCoord().length) {
-      shapes.polygons.push(tempPolygon);
-      clickedModes.polygon.click = false;
+  }
+}
+
+function polygonDrawEnd(e) {
+  if (clickedModes.polygon.click) {
+    var coord = webglUtil.getCanvasCoord(e);
+    tempPolygon.addCoord(coord);
+    shapes.polygons.push(tempPolygon);
+    clickedModes.polygon.click = false;
+  }
+}
+
+function polygonAddPoint() {
+  canvas.onmousedown = (e) => {
+    polygonAdd(e);
+  };
+  canvas.onmousemove = (e) => {
+    // do nothing
+  };
+}
+
+function polygonAdd(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.polygon.click) {
+    for (var i = 0; i < shapes.polygons.length; i++) {
+      if (shapes.polygons[i].isInside(coord)) {
+        selectedShape = i;
+        tempPolygon = shapes.polygons[i];
+        clickedModes.polygon.click = true;
+        break;
+      }
+    }
+  } else {
+    shapes.polygons.splice(selectedShape, 1);
+    tempPolygon.addCoord(coord);
+    shapes.polygons.push(tempPolygon);
+    clickedModes.polygon.click = false;
+  }
+}
+
+function polygonTranslation() {
+  canvas.onmousedown = (e) => {
+    console.log("click2");
+    polygonPlace(e);
+  };
+  canvas.onmousemove = (e) => {
+    polygonMove(e);
+  };
+  canvas.onmouseleave = (e) => {
+    polygonLeave(e);
+  }
+}
+
+function polygonPlace(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.polygon.click) {
+    for (var i = 0; i < shapes.polygons.length; i++) {
+      if (shapes.polygons[i].isInside(coord)) {
+        selectedShape = i;
+        clickedModes.polygon.click = true;
+        break;
+      }
+    }
+  } else {
+    shapes.polygons[selectedShape].translate(coord);
+    clickedModes.polygon.click = false;
+  }
+}
+
+function polygonMove(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (clickedModes.polygon.click) {
+    shapes.polygons[selectedShape].translate(coord);
+  }
+}
+
+function polygonLeave(e) {
+  if (clickedModes.polygon.click) {
+    clickedModes.polygon.click = false;
+  }
+}
+
+function polygonDilation() {
+  canvas.onmousedown = (e) => {
+    polygonDilate(e);
+  };
+  canvas.onmousemove = (e) => {
+    // do nothing
+  };
+}
+
+function polygonDilate(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  for (var i = 0; i < shapes.polygons.length; i++) {
+    if (shapes.polygons[i].isInside(coord)) {
+      selectedShape = i;
+      var value = document.querySelector("#myRange").value;
+      shapes.polygons[selectedShape].dilate(value);
+      break;
     }
   }
 }
