@@ -13,7 +13,7 @@ class shape {
 
   draw(gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertex), gl.STATIC_DRAW);
-    gl.drawArrays(this.type, this.offset, this.vertex.length);
+    gl.drawArrays(this.type, this.offset, this.shaderCount);
   }
 
   getVertex() {
@@ -51,11 +51,11 @@ class shape {
     return [this.coord[point * 2], this.coord[point * 2 + 1]];
   }
 
-  pushVertex(coord, color = this.baseColor){
+  pushVertex(coord){
     this.vertex.push(
       coord[0], coord[1],
-      color[0], color[1], 
-      color[2], color[3]);
+      0, 1, 
+      0, 1.0);
   }
 
   removeVertex(point){

@@ -180,7 +180,7 @@ function lineDrawingMode() {
 function lineDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.line.click) {
-    tempLine = new line(gl, coord, [Math.random(), Math.random(), Math.random(), Math.random()]);
+    tempLine = new line(gl, coord, [1, 0, 0, 1]);
     clickedModes.line.click = true;
   } else {
     clickedModes.line.click = false;
@@ -225,7 +225,7 @@ function squareDrawingMode() {
 function squareDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.square.click) {
-    tempSquare = new square(gl, coord, [0.9, 0, 0, 1]);
+    tempSquare = new square(gl, coord, [1, 0, 0, 1]);
     clickedModes.square.click = true;
   } else {
     shapes.squares[shapes.squares.length - 1].changeLastCoord(coord);
@@ -241,7 +241,6 @@ function squareDrawHover(e) {
   } else if (clickedModes.square.click && !clickedModes.square.hover) {
     tempSquare.firstHoverCoord(coord);
     shapes.squares.push(tempSquare);
-    console.log(shapes.squares[0].vertex);
     clickedModes.square.hover = true;
   }
 }
@@ -272,7 +271,6 @@ function rectangleDrawClick(e) {
     clickedModes.rectangle.click = true;
   } else {
     shapes.rectangles[shapes.rectangles.length - 1].changeLastCoord(coord);
-    console.log(shapes.rectangles[0].vertex)
     clickedModes.rectangle.click = false;
     clickedModes.rectangle.hover = false;
   }
@@ -315,11 +313,6 @@ function polygonDrawClick(e) {
   } else if (clickedModes.polygon.click && e.button == 2) {
     var coord = webglUtil.getCanvasCoord(e);
     tempPolygon.addCoord(coord);
-<<<<<<< HEAD
-    if (polygonPoints.value == tempPolygon.getPointCount()) {
-      shapes.polygons.push(tempPolygon);
-      clickedModes.polygon.click = false;
-=======
     shapes.polygons.push(tempPolygon);
     clickedModes.polygon.click = false;
   }
@@ -347,7 +340,6 @@ function polygonAdd(e) {
         clickedModes.polygon.click = true;
         break;
       }
->>>>>>> dec310b3b3586b57a9b4e04e5ee38cfda5d31a0d
     }
   } else if (e.button == 0) {
     shapes.polygons[selectedShape].addCoord(coord);
@@ -453,7 +445,7 @@ function selectPolygon(e) {
       if (shapes.polygons[i].isInside(coord)) {
         selectedShape = i;
         middlePoints = shapes.polygons[selectedShape].getMiddle();
-        coordObject = [...shapes.polygons[selectedShape].coord];
+        coordObject = [...shapes.polygons[selectedShape].vertex];
         clickedModes.polygon.click = true;
         break;
       }
