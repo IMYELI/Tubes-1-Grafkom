@@ -14,7 +14,10 @@ class polygon extends shape {
     this.shaderCount--;
   }
 
-  // check if the point (coord[0], coord[1]) is inside the polygon
+  movePoint(coord, index) {
+    this.coord[index] = coord[0];
+    this.coord[index + 1] = coord[1];
+  }
 
   isInside(coord) {
     let x = coord[0];
@@ -70,7 +73,6 @@ class polygon extends shape {
   }
 
   isNearVertex(coord) {
-    // check if point coord near one of the point in polygon
     for (let i = 0; i < this.coord.length; i += 2) {
       if (Math.abs(this.coord[i] - coord[0]) < 5 &&
           Math.abs(this.coord[i + 1] - coord[1]) < 5) {
