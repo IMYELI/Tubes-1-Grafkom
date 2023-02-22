@@ -9,6 +9,11 @@ class polygon extends shape {
     this.shaderCount++;
   }
 
+  removeCoord(index) {
+    this.coord.splice(index, 2);
+    this.shaderCount--;
+  }
+
   // check if the point (coord[0], coord[1]) is inside the polygon
 
   isInside(coord) {
@@ -62,5 +67,16 @@ class polygon extends shape {
       this.coord[i] = middle[0] + x * Math.cos(angle) - y * Math.sin(angle);
       this.coord[i + 1] = middle[1] + x * Math.sin(angle) + y * Math.cos(angle);
     }
+  }
+
+  isNearVertex(coord) {
+    // check if point coord near one of the point in polygon
+    for (let i = 0; i < this.coord.length; i += 2) {
+      if (Math.abs(this.coord[i] - coord[0]) < 5 &&
+          Math.abs(this.coord[i + 1] - coord[1]) < 5) {
+        return i;
+      }
+    }
+    return -1;
   }
 }

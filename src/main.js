@@ -289,6 +289,9 @@ function polygonAddPoint() {
   canvas.onmousemove = (e) => {
     // do nothing
   };
+  canvas.onmouseleave = (e) => {
+    clickedModes.polygon.click = false;
+  };
 }
 
 function polygonAdd(e) {
@@ -302,11 +305,30 @@ function polygonAdd(e) {
         break;
       }
     }
-  } else {
-    shapes.polygons.splice(selectedShape, 1);
-    tempPolygon.addCoord(coord);
-    shapes.polygons.push(tempPolygon);
+  } else if (e.button == 0) {
+    shapes.polygons[selectedShape].addCoord(coord);
+  } else if (e.button == 2) {
     clickedModes.polygon.click = false;
+  }
+}
+
+function polygonRemovePoint() {
+  canvas.onmousedown = (e) => {
+    polygonRemove(e);
+  };
+  canvas.onmousemove = (e) => {
+    // do nothing
+  };
+}
+
+function polygonRemove(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  for (var i = 0; i < shapes.polygons.length; i++) {
+    var index = shapes.polygons[i].isNearVertex(coord);
+    if (index != -1) {
+      shapes.polygons[i].removeCoord(index);
+      break;
+    }
   }
 }
 
