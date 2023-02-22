@@ -47,11 +47,10 @@ class polygon extends shape {
     }
   }
 
-  dilate(scale) {
-    let middle = this.getMiddle();
+  dilate(coordObject, scale, middle) {
     for (let i = 0; i < this.coord.length; i += 2) {
-      this.coord[i] = middle[0] + (this.coord[i] - middle[0]) * scale;
-      this.coord[i + 1] = middle[1] + (this.coord[i + 1] - middle[1]) * scale;
+      this.coord[i] = middle[0] + (coordObject[i] - middle[0]) * scale;
+      this.coord[i + 1] = middle[1] + (coordObject[i + 1] - middle[1]) * scale;
     }
   }
   rotate(coordObject, coord, middle) {

@@ -10,7 +10,6 @@ var canvas = document.querySelector("#canvas");
 var gl = canvas.getContext("webgl");
 var polygonPoints = document.querySelector("#polygon-sides");
 var dilationInput = document.querySelector("#dilation");
-// var rotationInput = document.querySelector("#rotation");
 
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
@@ -354,21 +353,21 @@ function polygonLeave(e) {
 
 function polygonDilation() {
   canvas.onmousedown = (e) => {
-    polygonDilate(e);
+    selectPolygon(e);
   };
   canvas.onmousemove = (e) => {
     // do nothing
   };
+  dilationInput.oninput = (e) => {
+    polygonDilate(e);
+  }
 }
 
 function polygonDilate(e) {
-  var coord = webglUtil.getCanvasCoord(e);
-  for (var i = 0; i < shapes.polygons.length; i++) {
-    if (shapes.polygons[i].isInside(coord)) {
-      selectedShape = i;
-      shapes.polygons[selectedShape].dilate(dilationInput.value);
-      break;
-    }
+  var dilationValue = document.querySelector("#dilation-value");
+  dilationValue.innerHTML = dilationInput.value
+  if (clickedModes.polygon.click) {
+    shapes.polygons[selectedShape].dilate(coordObject, dilationInput.value, middlePoints);
   }
 }
 
@@ -394,6 +393,10 @@ function selectPolygon(e) {
       }
     }
   } else {
+    dilationInput.oninput = (e) => {
+      var dilationValue = document.querySelector("#dilation-value");
+      dilationValue.innerHTML = dilationInput.value
+    }
     clickedModes.polygon.click = false;
   }
 }
