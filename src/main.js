@@ -26,6 +26,7 @@ var tempSquare = null;
 var tempRectangle = null;
 var selectedShape = null;
 var middlePoints = null;
+var coordObject = null;
 
 async function main() {
   if (!gl) {
@@ -262,9 +263,6 @@ function polygonDrawingMode() {
   canvas.onmousedown = (e) => {
     polygonDrawClick(e);
   };
-  canvas.ondblclick = (e) => {
-    polygonDrawEnd(e);
-  }
   canvas.onmousemove = (e) => {
     //do nothing
   }
@@ -275,13 +273,9 @@ function polygonDrawClick(e) {
   if (!clickedModes.polygon.click) {
     tempPolygon = new polygon(gl, coord, [0.9, 0, 0, 1]);
     clickedModes.polygon.click = true;
-  } else {
+  } else if (clickedModes.polygon.click && e.button == 0) {
     tempPolygon.addCoord(coord);
-  }
-}
-
-function polygonDrawEnd(e) {
-  if (clickedModes.polygon.click) {
+  } else if (clickedModes.polygon.click && e.button == 2) {
     var coord = webglUtil.getCanvasCoord(e);
     tempPolygon.addCoord(coord);
     shapes.polygons.push(tempPolygon);
@@ -394,6 +388,7 @@ function selectPolygon(e) {
       if (shapes.polygons[i].isInside(coord)) {
         selectedShape = i;
         middlePoints = shapes.polygons[selectedShape].getMiddle();
+        coordObject = [...shapes.polygons[selectedShape].coord];
         clickedModes.polygon.click = true;
         break;
       }
@@ -406,6 +401,6 @@ function selectPolygon(e) {
 function polygonRotate(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (clickedModes.polygon.click) {
-    shapes.polygons[selectedShape].rotate(coord, middlePoints);
+    shapes.polygons[selectedShape].rotate(coordObject, coord, middlePoints);
   }
 }

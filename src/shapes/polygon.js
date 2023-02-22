@@ -54,12 +54,12 @@ class polygon extends shape {
       this.coord[i + 1] = middle[1] + (this.coord[i + 1] - middle[1]) * scale;
     }
   }
-
-  rotate(coord, middle) {
+  rotate(coordObject, coord, middle) {
     let angle = Math.atan2(coord[1] - middle[1], coord[0] - middle[0]);
-    for (let i = 0; i < this.coord.length; i += 2) {
-      let x = this.coord[i] - middle[0];
-      let y = this.coord[i + 1] - middle[1];
+    angle = (angle + 2 * Math.PI) % (2 * Math.PI);
+    for (let i = 0; i < coordObject.length; i += 2) {
+      let x = coordObject[i] - middle[0];
+      let y = coordObject[i + 1] - middle[1];
       this.coord[i] = middle[0] + x * Math.cos(angle) - y * Math.sin(angle);
       this.coord[i + 1] = middle[1] + x * Math.sin(angle) + y * Math.cos(angle);
     }
