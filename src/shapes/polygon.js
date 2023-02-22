@@ -9,13 +9,13 @@ class polygon extends shape {
   }
 
   removeCoord(index) {
-    this.vertex.splice(index, 2);
+    this.removeVertex(index);
     this.shaderCount--;
   }
 
-  movePoint(coord, index) {
-    this.vertex[index] = coord[0];
-    this.vertex[index + 1] = coord[1];
+  movePoint(index, coord) {
+    this.vertex[index*6] = coord[0];
+    this.vertex[index*6 + 1] = coord[1];
   }
 
   isInside(coord) {

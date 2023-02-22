@@ -301,6 +301,9 @@ function polygonDrawingMode() {
   canvas.onmousemove = (e) => {
     //do nothing
   }
+  canvas.onmouseleave = (e) => {
+    clickedModes.polygon.click = false;
+  }
 }
 
 function polygonDrawClick(e) {
@@ -341,10 +344,8 @@ function polygonAdd(e) {
         break;
       }
     }
-  } else if (e.button == 0) {
+  } else {
     shapes.polygons[selectedShape].addCoord(coord);
-  } else if (e.button == 2) {
-    clickedModes.polygon.click = false;
   }
 }
 
@@ -353,6 +354,9 @@ function polygonRemovePoint() {
     polygonRemove(e);
   };
   canvas.onmousemove = (e) => {
+    // do nothing
+  };
+  canvas.onmouseleave = (e) => {
     // do nothing
   };
 }
@@ -376,7 +380,7 @@ function polygonTranslation() {
     polygonMove(e);
   };
   canvas.onmouseleave = (e) => {
-    polygonLeave(e);
+    clickedModes.polygon.click = false;
   }
 }
 
@@ -403,17 +407,14 @@ function polygonMove(e) {
   }
 }
 
-function polygonLeave(e) {
-  if (clickedModes.polygon.click) {
-    clickedModes.polygon.click = false;
-  }
-}
-
 function polygonDilation() {
   canvas.onmousedown = (e) => {
     selectPolygon(e);
   };
   canvas.onmousemove = (e) => {
+    // do nothing
+  };
+  canvas.onmouseleave = (e) => {
     // do nothing
   };
   dilationInput.oninput = (e) => {
@@ -435,6 +436,9 @@ function polygonRotation() {
   };
   canvas.onmousemove = (e) => {
     polygonRotate(e);
+  };
+  canvas.onmouseleave = (e) => {
+    clickedModes.polygon.click = false;
   };
 }
 
@@ -464,7 +468,41 @@ function polygonRotate(e) {
   if (clickedModes.polygon.click) {
     shapes.polygons[selectedShape].rotate(coordObject, coord, middlePoints);
   }
+}
 
-  
+function movePointPolygon() {
+  canvas.onmousedown = (e) => {
+    selectPoint(e);
+  };
+  canvas.onmousemove = (e) => {
+    moveSelectedPoint(e);
+  };
+  canvas.onmouseleave = (e) => {
+    clickedModes.polygon.click = false;
+  }
+}
 
+function selectPoint(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (!clickedModes.polygon.click) {
+    for (var i = 0; i < shapes.polygons.length; i++) {
+      var index = shapes.polygons[i].isNearVertex(coord);
+      if (index != -1) {
+        selectedShape = i;
+        currentPoint = index;
+        clickedModes.polygon.click = true;
+        break;
+      }
+    }
+  } else {
+    shapes.polygons[selectedShape].movePoint(currentPoint, coord);
+    clickedModes.polygon.click = false;
+  }
+}
+
+function moveSelectedPoint(e) {
+  var coord = webglUtil.getCanvasCoord(e);
+  if (clickedModes.polygon.click) {
+    shapes.polygons[selectedShape].movePoint(currentPoint, coord);
+  }
 }
