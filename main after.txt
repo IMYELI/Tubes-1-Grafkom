@@ -13,9 +13,13 @@ var polygonPoints = document.querySelector("#polygon-sides");
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
   line: { click: false, hover: false },
+<<<<<<< HEAD
+  select: false,
+=======
   square: { click: false, hover: false },
   rectangle: { click: false, hover: false },
   polygon: { click: false },
+>>>>>>> f009f447b70aaef3766027e80099c20d0d4daaf6
 };
 
 // Storing temporary line
@@ -93,12 +97,15 @@ async function main() {
         l.draw(gl);
       });
       shapes.squares.forEach((s) => {
+        s.setGLColor(gl, colorUniformLocation);
         s.draw(gl);
       });
       shapes.rectangles.forEach((r) => {
+        r.setGLColor(gl, colorUniformLocation);
         r.draw(gl);
       });
       shapes.polygons.forEach((p) => {
+        p.setGLColor(gl, colorUniformLocation);
         p.draw(gl);
       });
     } catch (e) {
@@ -119,46 +126,6 @@ function randInt(range) {
   return Math.floor(Math.random() * range);
 }
 
-  // using select tool to modify points
-  function selectMode() {
-    canvas.onmousedown = (e) => {
-      selectClick(e);
-    };
-    canvas.onmousemove = (e) => {
-      selectHover(e);
-    };
-  }
-
-  function selectClick(e) {
-    var coord = webglUtil.getCanvasCoord(e);
-    if (!clickedModes.select) {
-      // Check lines first
-      for (var i = 0; i < shapes.lines.length; i++) {
-        var l = shapes.lines[i];
-        var selectStatus = l.isPoint(coord);
-        if (selectStatus.isEndpoint) {
-          console.log("Line " + i + " is selected");
-          shapeIdx = i;
-          clickedModes.select = true;
-          shapeCode = 1;
-          currentPoint = selectStatus.point;
-          break;
-        }
-      }
-    } else {
-      shapeIdx = -1;
-      shapeCode = -1;
-      currentPoint = -1;
-      clickedModes.select = false;
-    }
-  }
-
-  function selectHover(e) {
-    var coord = webglUtil.getCanvasCoord(e);
-    if (shapeCode == 1 && clickedModes.select) {
-      shapes.lines[shapeIdx].setVertexCoord(coord, currentPoint);
-    }
-  }
 // What to do with canvas while clicking the line button
 function lineDrawingMode() {
   canvas.onmousedown = (e) => {
@@ -173,7 +140,7 @@ function lineDrawingMode() {
 function lineDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.line.click) {
-    tempLine = new line(gl, coord, [Math.random(), Math.random(), Math.random(), Math.random()]);
+    tempLine = new line(gl, coord, [0.9, 0, 0, 1]);
     clickedModes.line.click = true;
   } else {
     clickedModes.line.click = false;
@@ -185,11 +152,9 @@ function lineDrawClick(e) {
 function lineDrawHover(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (clickedModes.line.click && clickedModes.line.hover) {
-    // Update the last line
-    shapes.lines[shapes.lines.length - 1].setVertexCoord(coord, 1);
+    shapes.lines[shapes.lines.length - 1].changeLastCoord(coord);
   } else if (clickedModes.line.click && !clickedModes.line.hover) {
-    // Add a new point in line on the first click
-    tempLine.pushVertex(coord);
+    tempLine.firstHoverCoord(coord);
     shapes.lines.push(tempLine);
     clickedModes.line.hover = true;
   }
@@ -226,7 +191,6 @@ function squareDrawHover(e) {
   } else if (clickedModes.square.click && !clickedModes.square.hover) {
     tempSquare.firstHoverCoord(coord);
     shapes.squares.push(tempSquare);
-    console.log(shapes.squares[0].vertex);
     clickedModes.square.hover = true;
   }
 }
@@ -249,7 +213,6 @@ function rectangleDrawClick(e) {
     clickedModes.rectangle.click = true;
   } else {
     shapes.rectangles[shapes.rectangles.length - 1].changeLastCoord(coord);
-    console.log(shapes.rectangles[0].vertex)
     clickedModes.rectangle.click = false;
     clickedModes.rectangle.hover = false;
   }
@@ -282,12 +245,9 @@ function polygonDrawClick(e) {
     clickedModes.polygon.click = true;
   } else {
     tempPolygon.addCoord(coord);
-    if (polygonPoints.value == tempPolygon.getPointCount()) {
+    if (polygonPoints.value*2 == tempPolygon.getCoord().length) {
       shapes.polygons.push(tempPolygon);
       clickedModes.polygon.click = false;
     }
   }
-
-  
-
 }

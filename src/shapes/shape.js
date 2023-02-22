@@ -20,12 +20,12 @@ class shape {
     return this.vertex;
   }
 
-  setVertex(vertex) {
-    this.vertex = vertex;
+  getPointCount() { 
+    return this.vertex.length / 6;
   }
 
-  pushCoord(x, y, color) {
-    this.vertex.push(x, y, color[0], color[1], color[2], color[3]);
+  setVertex(vertex) {
+    this.vertex = vertex;
   }
 
   getVertexColor(point) {
@@ -51,9 +51,35 @@ class shape {
     return [this.coord[point * 2], this.coord[point * 2 + 1]];
   }
 
+  pushVertex(coord, color = this.baseColor){
+    this.vertex.push(
+      coord[0], coord[1],
+      color[0], color[1], 
+      color[2], color[3]);
+  }
+
+  removeVertex(point){
+    this.vertex.splice(point * 6, 6);
+  }
+
   //point refers to which point is being selected(the first point in a square or the second etc)
-  changeVertexCoord(coord, point) {
+  setVertexCoord(coord, point) {
     this.vertex[point * 6] = coord[0];
     this.vertex[point * 6 + 1] = coord[1];
+  }
+
+  isPoint(coord) {
+    var error = 4;
+    var retVal = { isEndpoint: false, point: -1 };
+    var point = this.getPointCount();
+
+    for(let i = 0; i < point; i++){
+      if(this.vertex[i*6] - error <= coord[0] && coord[0] <= this.vertex[i*6] + error && this.vertex[i*6 + 1] - error <= coord[1] && coord[1] <= this.vertex[i*6 + 1] + error){
+        retVal.isEndpoint = true;
+        retVal.point = i;
+      }
+    }
+    console.log(retVal);
+    return retVal;
   }
 }
