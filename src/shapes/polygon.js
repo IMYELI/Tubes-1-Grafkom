@@ -64,10 +64,10 @@ class polygon extends shape {
       this.vertex[i*6 + 1] = middle[1] + (coordObject[i*6 + 1] - middle[1]) * scale;
     }
   }
+
   rotate(coordObject, coord, middle) {
     let n = this.getPointCount();
-    let angle = Math.atan2(coord[1] - middle[1], coord[0] - middle[0]);
-    angle = (angle + 2 * Math.PI) % (2 * Math.PI);
+    let angle = this.getAngle(coord, middle);
     for (let i = 0; i < n; i += 1) {
       let x = coordObject[i*6] - middle[0];
       let y = coordObject[i*6 + 1] - middle[1];

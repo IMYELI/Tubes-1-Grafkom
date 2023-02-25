@@ -19,18 +19,20 @@
             <button class="button-3" onclick="squareDrawingMode()">Square</button>
             <button class="button-3" onclick="rectangleDrawingMode()">Rectangle</button>
             <button class="button-3" onclick="polygonDrawingMode()">Polygon</button>
-            <button class="button-3" onclick="selectMode()">Select</button>
           </div>
         </div>
         <div class="polygon-tools">
+          <label class="create">Universal Tools</label>
+          <div class="polygon-button">
+            <button class="button-3" onclick="selectMode()">Select</button>
+            <button class="button-3" onclick="rotateMode()">Rotate</button>
+            <button class="button-3" onclick="translateMode()">Translate</button>
+            <button class="button-3" onclick="movePointMode()">Move Point</button>
+          </div>
           <label class="create">Polygon Tools</label>
           <div class="polygon-button">
             <button class="button-3" onclick="polygonAddPoint()">Add Point</button>
             <button class="button-3" onclick="polygonRemovePoint()">Remove Point</button>
-            <button class="button-3" onclick="polygonTranslation()">Translation</button>
-            <button class="button-3" onclick="polygonRotation()">Rotation</button>
-            <button class="button-3" onclick="polygonDilation()">Dilation</button>
-            <button class="button-3" onclick="movePointPolygon()">Move Point</button>
           </div>
           <label class="dilation-text">Dilation Scale:</label>
           <div class="slidecontainer">
@@ -50,6 +52,8 @@
 
 
     void main() {
+      gl_PointSize = 10.0;
+
        // convert the position from pixels to 0.0 to 1.0
        vec2 zeroToOne = a_position.xy / u_resolution;
 
@@ -80,4 +84,5 @@
   <script src="shapes/square.js"></script>
   <script src="shapes/rectangle.js"></script>
   <script src="shapes/polygon.js"></script>
+  <script src="shapes/point.js"></script>
 </html>

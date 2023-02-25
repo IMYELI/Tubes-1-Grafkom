@@ -15,6 +15,20 @@ class shape {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertex), gl.STATIC_DRAW);
     gl.drawArrays(this.type, this.offset, this.shaderCount);
   }
+  isPoint(coord) {
+    var error = 5;
+    var retVal = { isEndpoint: false, point: -1 };
+    var point = this.getPointCount();
+
+    for(let i = 0; i < point; i++){
+      if(this.vertex[i*6] - error <= coord[0] && coord[0] <= this.vertex[i*6] + error && this.vertex[i*6 + 1] - error <= coord[1] && coord[1] <= this.vertex[i*6 + 1] + error){
+        retVal.isEndpoint = true;
+        retVal.point = i;
+      }
+    }
+    console.log(retVal);
+    return retVal;
+  }
 
   getVertex() {
     return this.vertex;
@@ -28,6 +42,10 @@ class shape {
     this.vertex = vertex;
   }
 
+  getAngle(coord, middle){
+    let angle = Math.atan2(coord[1] - middle[1], coord[0] - middle[0]);
+    return angle;
+  }
   getVertexColor(point) {
     return [this.vertex[point * 6 + 2], this.vertex[point * 6 + 3], this.vertex[point * 6 + 4], this.vertex[point * 6 + 5]];
   }
@@ -48,7 +66,7 @@ class shape {
   }
 
   getVertexCoord(point) {
-    return [this.coord[point * 2], this.coord[point * 2 + 1]];
+    return [this.vertex[point * 6], this.vertex[point * 6 + 1]];
   }
 
   pushVertex(coord){
@@ -68,18 +86,5 @@ class shape {
     this.vertex[point * 6 + 1] = coord[1];
   }
 
-  isPoint(coord) {
-    var error = 4;
-    var retVal = { isEndpoint: false, point: -1 };
-    var point = this.getPointCount();
-
-    for(let i = 0; i < point; i++){
-      if(this.vertex[i*6] - error <= coord[0] && coord[0] <= this.vertex[i*6] + error && this.vertex[i*6 + 1] - error <= coord[1] && coord[1] <= this.vertex[i*6 + 1] + error){
-        retVal.isEndpoint = true;
-        retVal.point = i;
-      }
-    }
-    console.log(retVal);
-    return retVal;
-  }
+  
 }
