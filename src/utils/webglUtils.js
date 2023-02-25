@@ -89,10 +89,22 @@ class webglUtils {
     return [x - rect.left, y - rect.top];
   }
 
+  hexToRgb(hex) {
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+      parseInt(result[1], 16),
+      parseInt(result[2], 16),
+      parseInt(result[3], 16)
+    ] : null;
+  }
+  
   hexToRgba(hex) {
-    var r = parseInt(hex.slice(1, 3), 16);
-    var g = parseInt(hex.slice(3, 5), 16);
-    var b = parseInt(hex.slice(5, 7), 16);
-    return [r, g, b, 1];
+    var rgb = this.hexToRgb(hex);
+    return [rgb[0]/255, rgb[1]/255, rgb[2]/255, 1];
   }
 }

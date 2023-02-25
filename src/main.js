@@ -13,6 +13,8 @@ var polygonPoints = document.querySelector("#polygon-sides");
 var slider = document.getElementById("dilation");
 var colorSelector = document.getElementById("color-picker");
 
+var inputModel = document.getElementById("load-file")
+
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
   line: { click: false, hover: false },
@@ -43,6 +45,65 @@ async function main() {
   if (!gl) {
     window.alert("Error initializing WebGL");
     return;
+  }
+  inputModel.onchange = e => { 
+    shapes = {
+      lines: [],
+      squares: [],
+      rectangles: [],
+      polygons: [],
+      selectedPoints: [],
+    }
+    var file = e.target.files[0]; 
+    var reader = new FileReader();
+    reader.readAsText(file,'UTF-8');
+    reader.onload = readerEvent => {
+      var content = readerEvent.target.result;
+      var tempShapes = JSON.parse(content);
+
+      //Create lines
+      var i = 0;
+      tempShapes.lines.forEach((l) => {
+        shapes.lines.push(new line(gl, [l.vertex[0], l.vertex[1]], [l.vertex[2],l.vertex[3],  l.vertex[4], l.vertex[5]]));
+        for(let n = 1;n<2;n++){
+          shapes.lines[i].pushVertex([l.vertex[n*6],l.vertex[n*6+1]], [l.vertex[n*6+2],l.vertex[n*6+3],l.vertex[n*6+4],l.vertex[n*6+5]]);
+        }
+        i++
+      });
+
+      //Create squares
+      i = 0;
+      tempShapes.squares.forEach((s) => {
+        shapes.squares.push(new square(gl, [s.vertex[0], s.vertex[1]], [s.vertex[2],s.vertex[3],  s.vertex[4], s.vertex[5]]));
+        console.log(shapes.squares[0])
+        for(let n = 1;n<4;n++){
+          shapes.squares[i].pushVertex([s.vertex[n*6],s.vertex[n*6+1]], [s.vertex[n*6+2],s.vertex[n*6+3],s.vertex[n*6+4],s.vertex[n*6+5]]);
+        }
+        i++
+      });
+
+      //Create rectangles
+      i = 0;
+      tempShapes.rectangles.forEach((r) => {
+        shapes.rectangles.push(new rectangle(gl, [r.vertex[0], r.vertex[1]], [r.vertex[2],r.vertex[3],  r.vertex[4], r.vertex[5]]));
+        for(let n = 1;n<4;n++){
+          shapes.rectangles[i].pushVertex([r.vertex[n*6],r.vertex[n*6+1]], [r.vertex[n*6+2],r.vertex[n*6+3],r.vertex[n*6+4],r.vertex[n*6+5]]);
+        }
+        i++;
+      });
+
+      //Create polygons
+      i = 0;
+      tempShapes.polygons.forEach((p) => {
+        shapes.polygons.push(new polygon(gl, [p.vertex[0], p.vertex[1]], [p.vertex[2],p.vertex[3],  p.vertex[4], p.vertex[5]]));
+        for(let n = 1;n<p.vertex.length/6;n++){
+          shapes.polygons[i].pushVertex([p.vertex[n*6],p.vertex[n*6+1]], [p.vertex[n*6+2],p.vertex[n*6+3],p.vertex[n*6+4],p.vertex[n*6+5]]);
+          shapes.polygons[i].shaderCount++;
+        }
+        i++;
+      });
+    
+    }
   }
 
   slider.addEventListener("input", function () {
@@ -501,6 +562,20 @@ function movePointMode(){
     // do nothing
   };
 }
+
+function saveModel(){
+  var json = JSON.stringify(shapes);
+  var blob = new Blob([json], {type: "application/json"});
+  var url  = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.download    = "model.json";
+  a.href        = url;
+  a.textContent = "Download model.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 
 function selectPoint(e){
   var coord = webglUtil.getCanvasCoord(e);
