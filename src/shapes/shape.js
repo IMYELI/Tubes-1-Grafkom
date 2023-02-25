@@ -26,7 +26,6 @@ class shape {
         retVal.point = i;
       }
     }
-    console.log(retVal);
     return retVal;
   }
 
@@ -69,11 +68,10 @@ class shape {
     return [this.vertex[point * 6], this.vertex[point * 6 + 1]];
   }
 
-  pushVertex(coord){
+  pushVertex(coord, color = this.baseColor){
     this.vertex.push(
       coord[0], coord[1],
-      0, 1, 
-      0, 1.0);
+      color[0],color[1],color[2],color[3]);
   }
 
   removeVertex(point){
@@ -85,6 +83,7 @@ class shape {
     this.vertex[point * 6] = coord[0];
     this.vertex[point * 6 + 1] = coord[1];
   }
+
 
   
 }

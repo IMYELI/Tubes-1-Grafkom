@@ -88,4 +88,11 @@ class webglUtils {
     var rect = e.target.getBoundingClientRect();
     return [x - rect.left, y - rect.top];
   }
+
+  hexToRgba(hex) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return [r, g, b, 1];
+  }
 }

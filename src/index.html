@@ -28,12 +28,18 @@
             <button class="button-3" onclick="rotateMode()">Rotate</button>
             <button class="button-3" onclick="translateMode()">Translate</button>
             <button class="button-3" onclick="movePointMode()">Move Point</button>
+            <button class="button-3" onclick="bucketMode()">Bucket</button>
           </div>
           <label class="create">Polygon Tools</label>
           <div class="polygon-button">
             <button class="button-3" onclick="polygonAddPoint()">Add Point</button>
             <button class="button-3" onclick="polygonRemovePoint()">Remove Point</button>
           </div>
+          <div class="Color-Picker">
+            <label for="color-picker">Select a color:</label><br/>
+            <input type="color" id="color-picker" name="color-picker" value="#ff0000">
+          </div>
+          <br/>
           <label class="dilation-text">Dilation Scale:</label>
           <div class="slidecontainer">
             <input type="range" min="0.1" max="10" value="1" step="0.1" class="slider" id="dilation" oninput="this.nextElementSibling.value = this.value">

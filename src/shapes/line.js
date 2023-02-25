@@ -11,11 +11,13 @@ class line extends shape {
     let x2 = this.vertex[6];
     let y2 = this.vertex[7];
 
-    let m = (y2 - y1) / (x2 - x1);
-    let b = y1 - m * x1;
-    let rh = m*x + b;
-    let err = 10;
-    return (y < rh + err && y > rh - err);
+    let distA = Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2));
+    let distB = Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2));
+    let distC = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    let err = 0.1;
+    let rh = distA + distB;
+
+    return (rh < distC + err && rh > distC - err);
   }
 
   getMiddle(){    
@@ -34,14 +36,16 @@ class line extends shape {
     this.vertex[index*6 + 1] = coord[1];
   }
 
-  translate(coord){
+  translate(coord, baseDistance){
     let middle = this.getMiddle();
     let dx = coord[0] - middle[0];
     let dy = coord[1] - middle[1];
-    this.vertex[0] += dx;
-    this.vertex[1] += dy;
-    this.vertex[6] += dx;
-    this.vertex[7] += dy;
+    let newDistanceX = dx - baseDistance[0];
+    let newDistanceY = dy - baseDistance[1];
+    this.vertex[0] += newDistanceX;
+    this.vertex[1] += newDistanceY;
+    this.vertex[6] += newDistanceX;
+    this.vertex[7] += newDistanceY;
   }
 
   rotate(baseCoord, coord, middle){

@@ -10,7 +10,8 @@ var webglUtil = new webglUtils();
 var canvas = document.querySelector("#canvas");
 var gl = canvas.getContext("webgl");
 var polygonPoints = document.querySelector("#polygon-sides");
-var dilationInput = document.querySelector("#dilation");
+var slider = document.getElementById("dilation");
+var colorSelector = document.getElementById("color-picker");
 
 // To check if we already clicked the canvas during a drawing mode
 var clickedModes = {
@@ -21,6 +22,8 @@ var clickedModes = {
   rotate: { click: false, hover: false },
   translate: { click: false, hover: false },
   movePoint: { click: false, hover: false },
+  dilate: { click: false, hover: false },
+  bucketFill: { click: false, hover: false },
 };
 
 // Storing temporary line
@@ -30,6 +33,7 @@ var tempRectangle = null;
 var selectedShape = null;
 var middlePoints = null;
 var baseCoord = null;
+var baseDistance
 
 var shapeIdx = -1;
 var shapeCode = -1;
@@ -41,7 +45,6 @@ async function main() {
     return;
   }
 
-  var slider = document.getElementById("dilation");
   slider.addEventListener("input", function () {
     if(shapeCode != -1) {
       let scale = slider.value;
@@ -139,7 +142,6 @@ function randInt(range) {
           shapeIdx = i;
           clickedModes.select = true;
           shapeCode = 1;
-          // currentPoint = selectStatus.point;
           break;
         }
       }
@@ -147,13 +149,12 @@ function randInt(range) {
       // Check squares
       for (var i = 0; i < shapes.squares.length; i++) {
         var s = shapes.squares[i];
-        var selectStatus = s.isPoint(coord);
-        if (selectStatus.isEndpoint) {
+        var selectStatus = s.isInside(coord);
+        if (selectStatus) {
           console.log("Square " + i + " is selected");
           shapeIdx = i;
           clickedModes.select = true;
           shapeCode = 2;
-          currentPoint = selectStatus.point;
           break;
         }
       }
@@ -161,13 +162,12 @@ function randInt(range) {
       // Check rectangles
       for (var i = 0; i < shapes.rectangles.length; i++) {
         var r = shapes.rectangles[i];
-        var selectStatus = r.isPoint(coord);
-        if (selectStatus.isEndpoint) {
+        var selectStatus = r.isInside(coord);
+        if (selectStatus) {
           console.log("Rectangle " + i + " is selected");
           shapeIdx = i;
           clickedModes.select = true;
           shapeCode = 3;
-          currentPoint = selectStatus.point;
           break;
         }
       }
@@ -224,7 +224,8 @@ function lineDrawingMode() {
 function lineDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.line.click) {
-    tempLine = new line(gl, coord, [1, 0, 0, 1]);
+    var color = webglUtil.hexToRgba(document.getElementById("color-picker").value);
+    tempLine = new line(gl, coord, color);
     clickedModes.line.click = true;
   } else {
     clickedModes.line.click = false;
@@ -269,7 +270,8 @@ function squareDrawingMode() {
 function squareDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.square.click) {
-    tempSquare = new square(gl, coord, [1, 0, 0, 1]);
+    var color = webglUtil.hexToRgba(document.getElementById("color-picker").value);
+    tempSquare = new square(gl, coord, color);
     clickedModes.square.click = true;
   } else {
     shapes.squares[shapes.squares.length - 1].changeLastCoord(coord);
@@ -311,7 +313,8 @@ function rectangleDrawingMode() {
 function rectangleDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.rectangle.click) {
-    tempRectangle = new rectangle(gl, coord, [0.9, 0, 0, 1]);
+    var color = webglUtil.hexToRgba(document.getElementById("color-picker").value);
+    tempRectangle = new rectangle(gl, coord, color);
     clickedModes.rectangle.click = true;
   } else {
     shapes.rectangles[shapes.rectangles.length - 1].changeLastCoord(coord);
@@ -353,7 +356,8 @@ function polygonDrawingMode() {
 function polygonDrawClick(e) {
   var coord = webglUtil.getCanvasCoord(e);
   if (!clickedModes.polygon.click) {
-    tempPolygon = new polygon(gl, coord, [0.9, 0, 0, 1]);
+    var color = webglUtil.hexToRgba(document.getElementById("color-picker").value);
+    tempPolygon = new polygon(gl, coord, color);
     clickedModes.polygon.click = true;
   } else if (clickedModes.polygon.click && e.button == 0) {
     tempPolygon.addCoord(coord);
@@ -414,7 +418,7 @@ function polygonRemove(e) {
 
 function translateMode(){
   canvas.onmousedown = (e) => {
-    startTranslate();
+    startTranslate(e);
   };
   canvas.onmousemove = (e) => {
     translateObject(e);
@@ -424,9 +428,11 @@ function translateMode(){
   };
 }
 
-function startTranslate(){
+function startTranslate(e){
+  var coord = webglUtil.getCanvasCoord(e);
   if(shapeIdx != -1 && !clickedModes.translate.click){
     clickedModes.translate.click = true;
+    baseDistance = [coord[0] - middlePoints[0], coord[1] - middlePoints[1]];
   }else if(shapeIdx != -1){
     clickedModes.translate.click = false;
     refreshSelectedPoint();
@@ -438,7 +444,7 @@ function startTranslate(){
 function translateObject(e){
   var coord = webglUtil.getCanvasCoord(e);
   if(clickedModes.translate.click && shapeCode != 0){
-    shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].translate(coord);
+    shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].translate(coord, baseDistance);
   }
 }
 
@@ -479,6 +485,7 @@ function startRotate(){
       clickedModes.rotate.click = false
       refreshSelectedPoint();
       baseCoord = [...shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].vertex];
+      middlePoints = shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].getMiddle()
     }
   }
 }
@@ -488,7 +495,7 @@ function movePointMode(){
     selectPoint(e);
   };
   canvas.onmousemove = (e) => {
-    movePoint(e);
+    movePointObject(e);
   };
   canvas.onmouseleave = (e) => {
     // do nothing
@@ -509,16 +516,44 @@ function selectPoint(e){
     }
   }else{
     shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].movePoint(currentPoint, coord)
+    refreshSelectedPoint();
     baseCoord = [...shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].vertex];
     middlePoints = shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].getMiddle()
-    refreshSelectedPoint();
     clickedModes.movePoint.click = false;
   }
 }
 
-function movePoint(e){
+function movePointObject(e){
   var coord = webglUtil.getCanvasCoord(e);
   if(clickedModes.movePoint.click){
     shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].movePoint(currentPoint, coord);
+  }
+}
+
+function bucketMode(){
+  canvas.onmousedown = (e) => {
+    bucketFill(e);
+  };
+  canvas.onmousemove = (e) => {
+    // do nothing
+  };
+  canvas.onmouseleave = (e) => {
+    // do nothing
+  };
+}
+
+function bucketFill(e){
+  var coord = webglUtil.getCanvasCoord(e);
+  if(shapeCode != -1){
+    var countPoint = shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].getPointCount();
+    for(var i = 0; i < countPoint; i++){
+      var status = shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].isPoint(coord);
+      if(status.isEndpoint){
+        var color = webglUtil.hexToRgba(colorSelector.value)
+        currentPoint = status.point;
+        shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].setVertexColor(currentPoint, color);
+        break;
+      }
+    }
   }
 }

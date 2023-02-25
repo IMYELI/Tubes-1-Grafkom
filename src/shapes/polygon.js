@@ -46,14 +46,16 @@ class polygon extends shape {
     return [x / n, y / n];
   }
 
-  translate(coord) {
+  translate(coord, baseDistance) {
     let middle = this.getMiddle();
     let x = coord[0] - middle[0];
     let y = coord[1] - middle[1];
+    let newDistanceX = x - baseDistance[0];
+    let newDistanceY = y - baseDistance[1];
     let n = this.getPointCount();
     for (let i = 0; i < n; i += 1) {
-      this.vertex[i*6] += x;
-      this.vertex[i*6 + 1] += y;
+      this.vertex[i*6] += newDistanceX;
+      this.vertex[i*6 + 1] += newDistanceY;
     }
   }
 
