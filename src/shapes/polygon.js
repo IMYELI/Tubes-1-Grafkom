@@ -6,6 +6,41 @@ class polygon extends shape {
   addCoord(coord) {
     this.pushVertex(coord);
     this.shaderCount++;
+    this.convexHull();
+  }
+
+  orientation(p, q, r){
+    let val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1]);
+    if (val == 0) return 0;  // collinear
+    return (val > 0)? 1: 2; // clock or counterclock wise
+  }
+  
+  convexHull(){
+    let n = this.getPointCount();
+    if (n < 3) return;
+    let hull = [];
+    let l = 0;
+    for (let i = 1; i < n; i++){
+      if (this.vertex[i*6] < this.vertex[l*6]){
+        l = i;
+      }
+    }
+    let p = l, q;
+    do{
+      hull.push(this.vertex[p*6], this.vertex[p*6 + 1], this.vertex[p*6 + 2], this.vertex[p*6 + 3], this.vertex[p*6 + 4], this.vertex[p*6 + 5]);
+        q = (p + 1) % n;   
+        for (let i = 0; i < n; i++){
+          if (this.orientation([this.vertex[p*6], this.vertex[p*6 + 1]], 
+          [this.vertex[i*6], this.vertex[i*6 + 1]], 
+          [this.vertex[q*6], this.vertex[q*6 + 1]]) == 2) {
+            q = i;
+          }
+        }
+      p = q;
+    } while (p != l);
+    this.vertex = [...hull];
+    this.shaderCount = this.vertex.length / 6;
+
   }
 
   removeCoord(index) {

@@ -429,11 +429,21 @@ function polygonDrawClick(e) {
     tempPolygon = new polygon(gl, coord, color);
     clickedModes.polygon.click = true;
   } else if (clickedModes.polygon.click && e.button == 0) {
-    tempPolygon.addCoord(coord);
+    if (tempPolygon.getPointCount() == 2) {
+      tempPolygon.addCoord(coord);
+      shapes.polygons.push(tempPolygon);
+    } else if (tempPolygon.getPointCount() == 1) {
+      tempPolygon.addCoord(coord);
+    } else {
+      shapes.polygons[shapes.polygons.length - 1].addCoord(coord);
+    }
   } else if (clickedModes.polygon.click && e.button == 2) {
-    var coord = webglUtil.getCanvasCoord(e);
-    tempPolygon.addCoord(coord);
-    shapes.polygons.push(tempPolygon);
+    if (tempPolygon.getPointCount() == 2) {
+      tempPolygon.addCoord(coord);
+      shapes.polygons.push(tempPolygon);
+    } else if (tempPolygon.getPointCount() > 2) {
+      shapes.polygons[shapes.polygons.length - 1].addCoord(coord);
+    }
     clickedModes.polygon.click = false;
   }
 }
