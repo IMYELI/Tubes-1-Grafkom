@@ -50,6 +50,8 @@ class rectangle extends shape {
   movePoint(index, coord){
     this.vertex[index*6] = coord[0];
     this.vertex[index*6 + 1] = coord[1];
+    this.vertex[(3 - index) * 6] = coord[0];
+    this.vertex[(5 - index) % 4 * 6 + 1] = coord[1];
   }
 
   isInside(coord){
@@ -77,8 +79,8 @@ class rectangle extends shape {
   }
 
   firstHoverCoord(coord) {
-    this.pushVertex([this.vertex[0], coord[1]]);
-    this.pushVertex([coord[0], coord[1]]);
     this.pushVertex([coord[0], this.vertex[1]]);
+    this.pushVertex([coord[0], coord[1]]);
+    this.pushVertex([this.vertex[0], coord[1]]);
   }
 }

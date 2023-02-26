@@ -49,8 +49,28 @@ class square extends shape {
     }
 
     movePoint(index, coord){
+      let middle = this.getMiddle();
       this.vertex[index*6] = coord[0];
       this.vertex[index*6 + 1] = coord[1];
+      let x = this.vertex[index*6] - middle[0];
+      let y = this.vertex[index*6 + 1] - middle[1];
+
+      let newX = -y;
+      let newY = x;
+      this.vertex[((index+1) % 4)*6] = newX + middle[0];
+      this.vertex[((index+1) % 4)*6 + 1] = newY + middle[1];
+
+      newX = -x;
+      newY = -y;
+      this.vertex[((index+2) % 4)*6] = newX + middle[0];
+      this.vertex[((index+2) % 4)*6 + 1] = newY + middle[1];
+      
+      newX = y;
+      newY = -x;
+      this.vertex[((index+3) % 4)*6] = newX + middle[0];
+      this.vertex[((index+3) % 4)*6 + 1] = newY + middle[1];
+
+      
     }
 
     isInside(coord){
@@ -84,22 +104,21 @@ class square extends shape {
       );
 
       if (coord[0] > this.vertex[0] && coord[1] > this.vertex[1]) {
-        this.pushVertex([this.vertex[0], this.vertex[1] + length]);
+        this.pushVertex([this.vertex[0] + length, this.vertex[1]]);
         this.pushVertex([this.vertex[0] + length, this.vertex[1] + length]);
-        this.pushVertex([this.vertex[0] + length, this.vertex[1]]);
-        
+        this.pushVertex([this.vertex[0], this.vertex[1] + length]);    
       } else if (coord[0] < this.vertex[0] && coord[1] < this.vertex[1]) {
-        this.pushVertex([this.vertex[0], this.vertex[1] - length]);
+        this.pushVertex([this.vertex[0] - length, this.vertex[1]]);
         this.pushVertex([this.vertex[0] - length, this.vertex[1] - length]);
-        this.pushVertex([this.vertex[0] - length, this.vertex[1]]);
-      } else if (coord[0] > this.vertex[0] && coord[1] < this.vertex[1]) {
         this.pushVertex([this.vertex[0], this.vertex[1] - length]);
-        this.pushVertex([this.vertex[0] + length, this.vertex[1] - length]);
+      } else if (coord[0] > this.vertex[0] && coord[1] < this.vertex[1]) {
         this.pushVertex([this.vertex[0] + length, this.vertex[1]]);
+        this.pushVertex([this.vertex[0] + length, this.vertex[1] - length]);
+        this.pushVertex([this.vertex[0], this.vertex[1] - length]);
       } else {
-        this.pushVertex([this.vertex[0], this.vertex[1] + length]);
-        this.pushVertex([this.vertex[0] - length, this.vertex[1] + length]);
         this.pushVertex([this.vertex[0] - length, this.vertex[1]]);
+        this.pushVertex([this.vertex[0] - length, this.vertex[1] + length]);
+        this.pushVertex([this.vertex[0], this.vertex[1] + length]);
       }
     }
 
