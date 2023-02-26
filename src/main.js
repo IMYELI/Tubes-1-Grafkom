@@ -113,6 +113,14 @@ async function main() {
     }
   });
 
+  slider.addEventListener("mouseup",function(e){
+    if(shapeCode != -1){
+      refreshSelectedPoint();
+      baseCoord = [...shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].vertex];
+      middlePoints = shapes[Object.keys(shapes)[shapeCode-1]][shapeIdx].getMiddle()
+    }
+  })
+
   var program = await webglUtil.createDefaultProgram(gl);
   var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
   var resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
