@@ -1,0 +1,279 @@
+<div>
+  <div>
+    <h4>How to Use</h4>
+    <ol>
+      <li>
+        <p><strong>Draw Line</strong></p>
+        <ul>
+          <li>Pilih <i>button</i> Line</li>
+          <li>Klik sekali pada <i>canvas untuk titik pertama</i></li>
+          <li>Klik kembali untuk membentuk titik kedua sekaligus sebuah garis</li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Draw Square</strong></p>
+        <ul>
+          <li>Pilih <i>button</i> Square</li>
+          <li>Klik sekali pada <i>canvas</i></li>
+          <li><i>Hover</i> mouse pada <i>canvas</i> hingga ukurannya sesuai dengan yang diinginkan</li>
+          <li>Klik kembali untuk membentuk memastikan titik yang dipilih dan membentuk sebuah persegi</li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Draw Rectangle</strong></p>
+        <ul>
+          <li>Pilih <i>button</i> Rectangle</li>
+          <li>Klik sekali pada <i>canvas</i></li>
+          <li><i>Hover</i> mouse pada <i>canvas</i> hingga ukurannya sesuai dengan yang diinginkan</li>
+          <li>Klik kembali untuk membentuk memastikan titik yang dipilih dan membentuk sebuah persegi panjang</li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Polygon</strong></p>
+        <ul>
+          <li>Pilih <i>button</i> Polygon</li>
+          <li>Klik sekali pada <i>canvas</i></li>
+          <li>Klik pada <i>canvas</i> sebanyak titik yang diinginkan. 
+            Urutan titik dibebaskan karena digunakan algoritma <strong>Convex Hull</strong></li>
+          <li>Klik kanan untuk menghentikan pembuatan polygon</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div>
+    <h4>How to Interact with Model</h4>
+    <ol>
+      <li>
+        <p><strong>Memilih bangun</strong>
+        </p>
+        <ol>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Klik salah satu bangun ruang yang ada di<i>canvas</i></li>
+            <li>Bangun ruang yang dipilih sudah dapat di-<i>interact</i> dengan fungsionalitas lain</li>
+          </ul>
+        </ol>
+      </li>
+      <li>
+        <p><strong>Mengubah panjang garis</strong></p>
+        <ol>
+            <p>With Move Point</p>
+            <ul>
+              <li>Pilih <i>button</i> Select</li>
+              <li>Pilih salah satu garis pada<i>canvas</i></li>
+              <li>Pilih <i>button</i> Move Point</li>
+              <li>
+                Klik pada salah satu titik sudut
+              </li>
+              <li>Hover untuk menyesuaikan panjang garis yang diinginkan</li>
+              <li>Klik pada canvas untuk mengubah posisi titik dan menghasilkan garis dengan panjang yang baru</li>
+            </ul>
+          </li>
+            <p>With Bucket</p>
+            <ul>
+              <li>Pilih <i>button</i> Select</li>
+              <li>Pilih salah satu garis pada<i>canvas</i></li>
+              <li>Pilih <i>button</i> Bucket</li>
+              <li>
+              <li>Gunakan slider untuk mengubah ukuran garis</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <p>
+          <strong>Mengubah ukuran sisi persegi</strong>
+        </p>
+        <ol>
+          <p>With Move Point</p>
+            <ul>
+              <li>Pilih <i>button</i> Select</li>
+              <li>Pilih salah satu persegi pada<i>canvas</i></li>
+              <li>Pilih <i>button</i> Move Point</li>
+              <li>
+                Klik pada salah satu titik sudut
+              </li>
+              <li>Hover untuk menyesuaikan panjang sisi yang diinginkan</li>
+              <li>Klik pada canvas untuk mengubah posisi titik dan menghasilkan persegi dengan panjang sisi yang baru</li>
+            </ul>
+          </li>
+            <p>With Bucket</p>
+            <ul>
+              <li>Pilih <i>button</i> Select</li>
+              <li>Pilih salah satu persegi pada<i>canvas</i></li>
+              <li>Pilih <i>button</i> Bucket</li>
+              <li>
+              <li>Gunakan slider untuk mengubah ukuran persegi</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <p>
+          <strong>Mengubah ukuran sisi persegi panjang</strong>
+        </p>
+        <ol>
+          <p>With Move Point</p>
+            <ul>
+              <li>Pilih <i>button</i> Select</li>
+              <li>Pilih salah satu persegi panjang pada<i>canvas</i></li>
+              <li>Pilih <i>button</i> Move Point</li>
+              <li>
+                Klik pada salah satu titik sudut
+              </li>
+              <li>Hover untuk menyesuaikan panjang sisi panjang/lebar yang diinginkan</li>
+              <li>Klik pada canvas untuk mengubah posisi titik dan menghasilkan persegi panjang dengan panjang sisi yang baru</li>
+            </ul>
+          </li>
+            <p>With Bucket</p>
+            <ul>
+              <li>Pilih <i>button</i> Select</li>
+              <li>Pilih salah satu persegi panjang pada<i>canvas</i></li>
+              <li>Pilih <i>button</i> Bucket</li>
+              <li>
+              <li>Gunakan slider untuk mengubah ukuran persegi panjang</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <p>
+          <strong>Menambah titik pada polygon</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Pilih salah satu polygon pada<i>canvas</i></li>
+            <li>Pilih <i>button</i> Add Point</li>
+            <li>
+              Klik titik sudut baru yang diinginkan
+            </li>
+          </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Menghapus titik pada polygon</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Pilih salah satu polygon pada<i>canvas</i></li>
+            <li>Pilih <i>button</i> Remove Point</li>
+            <li>
+              Klik titik sudut yang ingin dihapus
+            </li>
+          </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Melakukan rotasi</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Pilih salah satu shape pada<i>canvas</i></li>
+            <li>Pilih <i>button</i> Rotate</li>
+            <li>Hover pada canvas untuk menyesuaikan rotasi yang diinginkan</li>
+            <li>Klik pada canvas untuk mengakhiri rotasi</li>
+          </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Melakukan translasi</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Pilih salah satu shape pada<i>canvas</i></li>
+            <li>Pilih <i>button</i> Translate</li>
+            <li>Hover pada canvas untuk menyesuaikan titik akhir yang diinginkan</li>
+            <li>Klik pada canvas untuk mengakhiri translasi</li>
+          </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Melakukan dilatasi</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Pilih salah satu shape pada<i>canvas</i></li>
+            <li>Pilih <i>button</i> Bucket</li>
+            <li>Gerakkan slider untuk menyesuaikan ukuran yang diinginkan</li>
+          </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Menggerakkan titik sudut</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Pilih salah satu shape pada<i>canvas</i></li>
+            <li>Pilih <i>button</i> Move Point</li>
+            <li>Klik pada salah satu titik sudut</li>
+            <li>Hover pada canvas untuk menyesuaikan titik akhir yang diinginkan</li>
+            <li>Klik pada canvas untuk mengakhiri pergerakkan titik sudut</li>
+          </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Mengubah warna</strong>
+        </p>
+        <ol>
+          <li>
+            <p>Mengubah warna sebelum menggambar</p>
+            <ul>
+              <li>Pilih Color Picker</li>
+              <li>Pilih salah satu warna</li>
+              <li>Buat <i>shape</i> yang diinginkan</li>
+            </ul>
+          </li>
+          <li>
+            <p>Mengubah warna titik setelah menggambar</p>
+            <ul>
+              <li>Pilih <i>button</i> Select</li>
+              <li>Pilih salah satu shape pada<i>canvas</i></li>
+              <li>Pilih Color Picker</li>
+              <li>Pilih salah satu warna</li>
+              <li>Klik pada salah satu titik shape tersebut untuk mengubah warna</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <p>
+          <strong>Menghapus shape</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Select</li>
+            <li>Pilih salah satu shape pada<i>canvas</i></li>
+            <li>Pilih <i>button</i> Delete</li>
+          </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Menghapus semua shape</strong>
+        </p>
+          <ul>
+            <li>Pilih <i>button</i> Clear Canvas</li>
+          </ul>
+    </ol>
+  </div>
+  <div>
+    <h4>How to Save and Load</h4>
+    <ol>
+      <li>
+        <p><strong>Save Project</strong></p>
+        <ul>
+          <li>Pilih <i>button</i> Save Model</li>
+          <li>
+            <i>file</i> baru dengan nama"model.json" akan tersimpan
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Load Project</strong></p>
+        <ul>
+          <li>Pilih <i>button</i> Choose File</li>
+          <li>Pilih <i>file</i> yang diinginkan dari lokal</li>
+          <li>Akan di-load <i>file</i> yang dipilih</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+</div>
