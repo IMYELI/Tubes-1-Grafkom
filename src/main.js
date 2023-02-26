@@ -495,6 +495,29 @@ function polygonRemove(e) {
   }
 }
 
+function deleteObject(){
+  if(shapeIdx != -1){
+    shapes[Object.keys(shapes)[shapeCode-1]].splice(shapeIdx, 1);
+    shapeIdx = -1;
+    shapeCode = -1;
+    refreshSelectedPoint();
+  }
+}
+
+function clearCanvas(){
+  shapes = {
+    lines: [],
+    squares: [],
+    rectangles: [],
+    polygons: [],
+    selectedPoints: [],
+  }
+  
+  shapeIdx = -1;
+  shapeCode = -1;
+  refreshSelectedPoint();
+}
+
 function translateMode(){
   canvas.onmousedown = (e) => {
     startTranslate(e);

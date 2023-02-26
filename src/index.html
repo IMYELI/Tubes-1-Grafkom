@@ -23,12 +23,13 @@
         </div>
         <div class="polygon-tools">
           <label class="create">Universal Tools</label>
-          <div class="polygon-button">
+          <idv class="polygon-button">
             <button class="button-3" onclick="selectMode()">Select</button>
             <button class="button-3" onclick="rotateMode()">Rotate</button>
             <button class="button-3" onclick="translateMode()">Translate</button>
             <button class="button-3" onclick="movePointMode()">Move Point</button>
             <button class="button-3" onclick="bucketMode()">Bucket</button>
+            <button class="button-3" onclick="deleteObject()">Delete</button>
           </div>
           <label class="create">Polygon Tools</label>
           <div class="polygon-button">
@@ -45,7 +46,9 @@
             <input type="range" min="0.1" max="10" value="1" step="0.1" class="slider" id="dilation" oninput="this.nextElementSibling.value = this.value">
             <output id="dilation-value">1</output>
           </div>
+          <br/>
           <button class="button-3" onclick="saveModel()">Save Model</button>
+          <button class="button-3" onclick="clearCanvas()">Clear Canvas</button>
           <br/><br/>
           <label class="create">Load Model: </label>
           <br/><br/>
