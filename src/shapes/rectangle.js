@@ -48,10 +48,25 @@ class rectangle extends shape {
     }
   }
   movePoint(index, coord){
+    let middle = this.getMiddle();
+    let angle = Math.atan2(this.vertex[((index + 1) % 4)*6 + 1] - middle[1], 
+    this.vertex[((index + 1) % 4)*6] - middle[0]) - 
+    Math.atan2(this.vertex[index*6 + 1] - middle[1], 
+    this.vertex[index*6] - middle[0]);
+    angle = angle > 0 ? angle : angle + 2 * Math.PI;
+    let allAngle = [angle, Math.PI, angle + Math.PI];
+
     this.vertex[index*6] = coord[0];
     this.vertex[index*6 + 1] = coord[1];
-    this.vertex[(3 - index) * 6] = coord[0];
-    this.vertex[(5 - index) % 4 * 6 + 1] = coord[1];
+    let x = this.vertex[index*6] - middle[0];
+    let y = this.vertex[index*6 + 1] - middle[1];
+
+    for (let i = 0; i < 3; i++) {
+      let newX = x * Math.cos(allAngle[i]) - y * Math.sin(allAngle[i]);
+      let newY = x * Math.sin(allAngle[i]) + y * Math.cos(allAngle[i]);
+      this.vertex[((index + i + 1) % 4)*6] = newX + middle[0];
+      this.vertex[((index + i + 1) % 4)*6 + 1] = newY + middle[1];
+    }
   }
 
   isInside(coord){
